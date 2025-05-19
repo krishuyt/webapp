@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IMEWOYOU 🐾</title>
+  <link rel="stylesheet" href="s.css" />
+  <style>
+    body.light { background: #fff; color: #000; }
+    body.dark { background: #121212; color: #fff; }
+    .container { display: flex; flex-direction: column; min-height: 100vh; }
+    .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 1rem; border-bottom: 1px solid #ddd; }
+    .top-bar h1 { display: flex; align-items: center; gap: 0.5rem; }
+    .profile-icon img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+    .feed { flex: 1; padding: 1rem; }
+    .post { margin-bottom: 2rem; }
+    .post img, .post video { width: 100%; border-radius: 10px; }
+    .bottom-nav { display: flex; justify-content: space-around; padding: 0.5rem; border-top: 1px solid #ddd; background: #fafafa; }
+    .bottom-nav a img { width: 30px; height: 30px; }
+    .add-post-btn { position: fixed; bottom: 70px; right: 20px; background: #ff4081; color: white; border: none; border-radius: 50%; width: 60px; height: 60px; font-size: 30px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <h1>
+        <img src="imewoyou.png" alt="icon" style="width: 50px; height: 50px; object-fit: contain;" />
+        i mewo you
+      </h1>
+      <a href="profile.html" class="profile-icon">
+        <img id="userProfilePic" src="images/user-icon.png" alt="Profile" />
+      </a>
+    </div>
+
+    <!-- Feed -->
+    <div class="feed" id="feed">
+      <div class="post">
+        <img src="images/cat-post.jpg" alt="Cute Cat" />
+        <p>😺 Just vibing... #GenZCat</p>
+      </div>
+      <div class="post">
+        <video controls>
+          <source src="cat.mp4" type="video/mp4" />
+        </video>
+        <p>🤣 Who needs TV when cats exist?</p>
+      </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+      <a href="#"><img src="home.png" alt="Feed" /></a>
+      <a href="chat.html"><img src="chat.png" alt="Chat" /></a>
+      <a href="#" id="addPostTrigger"><img src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Create" /></a>
+      <a href="#"><img src="tips.png" alt="Tips" /></a>
+      <a href="#"><img src="adopt.png" alt="Adopt" /></a>
+    </div>
+
+    <!-- Hidden File Input for Adding Post -->
+    <input type="file" id="addPostInput" accept="image/*,video/*" style="display:none" />
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Theme Handling
+    const theme = localStorage.getItem("theme") || "light";
+    document.body.className = theme;
+
+    // Load Profile Picture from localStorage
+    const savedProfilePic = localStorage.getItem("profilePic");
+    if (savedProfilePic) {
+      document.getElementById("userProfilePic").src = savedProfilePic;
+    }
+
+    // Load user posts from localStorage
+    function loadUserPosts() {
+      const userPosts = JSON.parse(localStorage.getItem("userPosts") || "[]");
+      const feed = document.getElementById("feed");
+
+      userPosts.reverse().forEach(post => {
+        const postDiv = document.createElement("div");
+        postDiv.className = "post";
+        if (post.type.startsWith("image")) {
+          postDiv.innerHTML = `<img src="${post.data}" alt="User Post" /><p>${post.caption}</p>`;
+        } else if (post.type.startsWith("video")) {
+          postDiv.innerHTML = `<video controls><source src="${post.data}" type="${post.type}" /></video><p>${post.caption}</p>`;
+        }
+        feed.insertBefore(postDiv, feed.firstChild);
+      });
+    }
+
+    loadUserPosts();
+
+    // Add Post Button Click
+    document.getElementById("addPostTrigger").addEventListener("click", () => {
+      document.getElementById("addPostInput").click();
+    });
+
+    // Handle File Upload for Post
+    document.getElementById("addPostInput").addEventListener("change", function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const caption = prompt("Enter caption for your post:");
+          const newPost = { data: e.target.result, type: file.type, caption: caption || "" };
+          
+          // Save to localStorage
+          const userPosts = JSON.parse(localStorage.getItem("userPosts") || "[]");
+          userPosts.push(newPost);
+          localStorage.setItem("userPosts", JSON.stringify(userPosts));
+
+          // Refresh Feed
+          location.reload();
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>

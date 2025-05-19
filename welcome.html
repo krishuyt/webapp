@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Gen-Z Style</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+  <style>
+    .signup-container {
+      background: white;
+      padding: 2rem;
+      border-radius: 20px;
+      width: 320px;
+      text-align: center;
+      box-shadow: 0 0 30px rgba(0,0,0,0.2);
+      position: relative;
+      animation: pop 0.6s ease;
+    }
+
+    .signup-container h2 {
+      margin-bottom: 1rem;
+    }
+
+    .cat {
+      width: 80px;
+      margin-bottom: 10px;
+      animation: float 2s ease-in-out infinite;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .login-link {
+      margin-top: 1rem;
+      font-size: 14px;
+    }
+
+    .login-link a {
+      color: #6a82fb;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .star {
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      background: yellow;
+      border-radius: 50%;
+      top: -15px;
+      right: -15px;
+      box-shadow: 0 0 15px rgba(255, 255, 0, 0.6);
+    }
+  </style>
+</head>
+<body>
+  <div class="signup-container">
+    <div class="star"></div>
+    <img src="https://cdn2.thecatapi.com/images/MTY3ODIyMQ.jpg" class="cat" alt="cool cat" />
+    <h2>Join the Cat Crew 😸</h2>
+
+    <input type="text" id="username" placeholder="Username" />
+    <input type="email" id="signupEmail" placeholder="Email" />
+    <input type="password" id="signupPassword" placeholder="Password" />
+    
+    <button onclick="signUp()">Create Account</button>
+
+    <div class="login-link">
+      Already one of us? <a href="index.html">Log In</a>
+    </div>
+  </div>
+
+  <script>
+    
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    function signUp() {
+      const email = document.getElementById("signupEmail").value;
+      const password = document.getElementById("signupPassword").value;
+      auth.createUserWithEmailAndPassword(email, password)
+        .then((userCredential) => {
+          alert("Welcome to the squad! 🎉");
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    }
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCqp3tZIoVQ-nPg3mkZ1deqn3u9w0La5-o",
+  authDomain: "mewo-c6872.firebaseapp.com",
+  projectId: "mewo-c6872",
+  storageBucket: "mewo-c6872.firebasestorage.app",
+  messagingSenderId: "61228586043",
+  appId: "1:61228586043:web:dfccbd090eead6c041f81e",
+  measurementId: "G-580CH32408"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+  </script>
+
+   
+</body>
+</html>

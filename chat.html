@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Instagram-style Chat</title>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Helvetica', sans-serif;
+      background-color: #fafafa;
+      display: flex;
+      height: 100vh;
+    }
+
+    .sidebar {
+      width: 25%;
+      background: #fff;
+      border-right: 1px solid #ddd;
+      overflow-y: auto;
+    }
+
+    .sidebar h2 {
+      padding: 1rem;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .chat-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .chat-list li {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+    }
+
+    .chat-list li:hover {
+      background-color: #f1f1f1;
+    }
+
+    .chat-window {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #fff;
+    }
+
+    .chat-header {
+      padding: 1rem;
+      border-bottom: 1px solid #ddd;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-messages {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .message {
+      padding: 0.6rem 1rem;
+      border-radius: 18px;
+      max-width: 60%;
+      word-wrap: break-word;
+    }
+
+    .sent {
+      align-self: flex-end;
+      background-color: #dcf8c6;
+    }
+
+    .received {
+      align-self: flex-start;
+      background-color: #eee;
+    }
+
+    .chat-input {
+      display: flex;
+      border-top: 1px solid #ddd;
+      padding: 0.8rem;
+    }
+
+    .chat-input input {
+      flex: 1;
+      padding: 0.6rem 1rem;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      outline: none;
+    }
+
+    .chat-input button {
+      margin-left: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      background: #3897f0;
+      color: white;
+      border-radius: 20px;
+      cursor: pointer;
+    }
+
+    .chat-input button:hover {
+      background: #2e82df;
+    }
+
+    .home-button {
+      background-color: #3897f0;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 20px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .home-button:hover {
+      background-color: #2e82df;
+    }
+
+    .profile-button {
+      margin-left: 10px;
+      background-color: #ff4081;
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border-radius: 20px;
+      cursor: pointer;
+      border: none;
+    }
+
+    .profile-button:hover {
+      background-color: #e63670;
+    }
+
+    .typing-indicator {
+      font-style: italic;
+      color: #aaa;
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <h2>Chats</h2>
+    <ul class="chat-list">
+      <li onclick="setChat('Alex')">Alex</li>
+      <li onclick="setChat('Jordan')">Jordan</li>
+      <li onclick="setChat('Taylor')">Taylor</li>
+    </ul>
+  </div>
+
+  <div class="chat-window">
+    <div class="chat-header" id="chatHeader">
+      <button class="home-button" onclick="goHome()">Home</button>
+      <div id="chatName">Alex</div>
+      <button class="profile-button" onclick="goToProfile()">Profile</button>
+    </div>
+    <div class="chat-messages" id="messages"></div>
+    <div class="chat-input">
+      <input type="text" id="messageInput" placeholder="Type a message..." oninput="showTypingIndicator()"/>
+      <button onclick="sendMessage()">Send</button>
+      <span id="typingIndicator" class="typing-indicator" style="display: none;">Typing...</span>
+    </div>
+  </div>
+
+  <script>
+    // 🔥 Firebase Config (REPLACE with your real config)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT_ID.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    // 🔥 Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    let currentChat = 'Alex';
+    const chatHeader = document.getElementById('chatHeader');
+    const messages = document.getElementById('messages');
+    const messageInput = document.getElementById('messageInput');
+    const typingIndicator = document.getElementById('typingIndicator');
+    let typingTimeout;
+
+    // 📥 Load Messages in Real-Time
+    function loadMessages(chatWith) {
+      messages.innerHTML = '';
+      db.collection('chats')
+        .doc(chatWith)
+        .collection('messages')
+        .orderBy('timestamp')
+        .onSnapshot(snapshot => {
+          messages.innerHTML = '';
+          snapshot.forEach(doc => {
+            const msg = doc.data();
+            const div = document.createElement('div');
+            div.className = 'message ' + (msg.sender === 'me' ? 'sent' : 'received');
+            div.textContent = msg.text;
+            messages.appendChild(div);
+          });
+          messages.scrollTop = messages.scrollHeight;
+        });
+    }
+
+    // 💬 Change Chat Target
+    function setChat(name) {
+      currentChat = name;
+      document.getElementById('chatName').textContent = name;
+      loadMessages(name);
+    }
+
+    // 📤 Send Message
+    function sendMessage() {
+      const text = messageInput.value.trim();
+      if (text === "") return;
+
+      db.collection('chats')
+        .doc(currentChat)
+        .collection('messages')
+        .add({
+          sender: 'me',
+          text: text,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+      messageInput.value = "";
+      hideTypingIndicator();
+    }
+
+    // 🏠 Go Back to Homepage
+    function goHome() {
+      window.location.href = "homepage.html"; // Replace with your homepage URL
+    }
+
+    // 🧑‍⚖️ Go to Profile Page
+    function goToProfile() {
+      window.location.href = "profile.html"; // Replace with your profile page URL
+    }
+
+    // ✍️ Typing Indicator
+    function showTypingIndicator() {
+      typingIndicator.style.display = "inline";
+      clearTimeout(typingTimeout);
+      typingTimeout = setTimeout(hideTypingIndicator, 2000);
+    }
+
+    function hideTypingIndicator() {
+      typingIndicator.style.display = "none";
+    }
+
+    // Initial load
+    setChat(currentChat);
+  </script>
+</body>
+</html>

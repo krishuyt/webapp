@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Profile 🐾</title>
+  <link rel="stylesheet" href="profile.css" />
+</head>
+<body>
+  <div class="profile-page">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <h1>My Profile 👤</h1>
+      <a href="homepage.html" class="profile-icon">🏠</a>
+    </div>
+
+    <!-- Profile Details -->
+    <div class="profile-details">
+      <label for="profile-pic">Profile Picture 🖼️</label>
+      <input type="file" id="profile-pic">
+
+      <label for="first-name">First Name ✍️</label>
+      <input type="text" id="first-name" placeholder="First Name">
+
+      <label for="last-name">Last Name ✍️</label>
+      <input type="text" id="last-name" placeholder="Last Name">
+
+      <label for="dob">Date of Birth 🎂</label>
+      <input type="date" id="dob">
+
+      <label for="gender">Gender 🌈</label>
+      <select id="gender">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+        <option value="other">Other</option>
+      </select>
+
+      <label for="address">Address 📍</label>
+      <input type="text" id="address" placeholder="Enter Address">
+
+      <!-- Toggle Button -->
+      <button id="themeToggle">🌙 Toggle Theme</button>
+      <button id="logout">Logout 🚪</button>
+    </div>
+
+    <!-- Display User Posts -->
+    <div id="user-posts">
+      <h2>Your Posts 📝</h2>
+      <div id="feed">
+        <!-- User Posts will be loaded here -->
+      </div>
+    </div>
+
+    <!-- Bottom Nav -->
+    <div class="bottom-nav">
+      <a href="homepage.html"><img src="home.png" alt="Feed" /></a>
+      <a href="chat.html"><img src="chat.png" alt="Chat" /></a>
+      <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Create" /></a>
+      <a href="#"><img src="tips.png" alt="Tips" /></a>
+      <a href="#"><img src="adopt.png" alt="Adopt" /></a>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Load saved theme from localStorage
+    const theme = localStorage.getItem("theme") || "light";
+    document.body.classList.add(theme);
+
+    // Toggle theme on button click
+    document.getElementById("themeToggle").addEventListener("click", () => {
+      // Toggle between 'light' and 'dark' themes
+      const newTheme = document.body.classList.contains("light") ? "dark" : "light";
+      
+      // Apply new theme
+      document.body.className = newTheme;
+
+      // Save the new theme to localStorage
+      localStorage.setItem("theme", newTheme);
+    });
+  </script>
+</body>
+</html>

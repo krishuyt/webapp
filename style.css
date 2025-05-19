@@ -1,0 +1,104 @@
+body {
+    margin: 0;
+    font-family: 'Comic Sans MS', cursive;
+    background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+  
+  .login-container, .signup-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 20px;
+    width: 300px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0,0,0,0.2);
+    position: relative;
+  }
+  
+  .cat {
+    width: 80px;
+    margin-bottom: 10px;
+    animation: float 2s ease-in-out infinite;
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
+  input {
+    width: 100%;
+    margin: 0.5rem 0;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+  }
+  
+  button {
+    background: #6a82fb;
+    color: white;
+    padding: 10px;
+    border: none;
+    width: 100%;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-top: 1rem;
+    font-weight: bold;
+    transition: 0.3s ease;
+  }
+  
+  button:hover {
+    background: #a18cd1;
+  }
+  
+  .or {
+    margin: 1rem 0;
+    font-weight: bold;
+  }
+  
+  .social-login button {
+    background: #4267B2;
+    margin: 0.25rem 0;
+  }
+  
+  #googleLogin {
+    background: #DB4437;
+  }
+  
+  .signup-circle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: #cceeff;
+    border-radius: 50%;
+    width: 90px;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+  
+  .signup-circle a {
+    text-decoration: none;
+    color: #0077cc;
+    font-size: 14px;
+  }
+  body {
+    margin: 0;
+    font-family: 'Comic Sans MS', cursive;
+    background: linear-gradient(135deg, #ffdde1, #ee9ca7), 
+                url('https://www.transparenttextures.com/patterns/diagmonds-light.png'); /* Gen-Z texture */
+    background-size: cover;
+    background-blend-mode: overlay;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+  }
+ 

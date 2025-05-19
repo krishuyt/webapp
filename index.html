@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - MeowWorld</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/css/intlTelInput.min.css"/>
+</head>
+<body>
+  <div class="signup-circle">
+    <a href="signup.html">New here?<br><span>Sign up</span></a>
+  </div>
+
+  <div class="login-container">
+    <img src="cat.png" class="cat" />
+    <h2>Login to your account</h2>
+
+    <input type="email" placeholder="Email" id="email"/>
+    <input type="password" placeholder="Password" id="password"/>
+    <input id="phone" type="tel" placeholder="Phone number">
+    
+    
+    <button id="loginBtn">Let’s go 🚀</button>
+
+    <div class="or">— or —</div>
+
+    <div class="social-login">
+      <button id="googleLogin">Login with Google</button>
+      <button id="facebookLogin">Login with Facebook</button>
+  
+    </div>
+  </div>
+  
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.12/js/intlTelInput.min.js"></script>
+  <script src="firebase.js"></script>
+  
+</body>
+
+</html>
